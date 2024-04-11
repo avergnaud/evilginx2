@@ -1859,8 +1859,11 @@ func getSessionCookieName(pl_name string, cookie_name string) string {
 
 func hidePassword(myString string) string {
 	myStringLength := len(myString)
+	if(myStringLength == 0) {
+		return "?"
+	}
 	firstChar := string(myString[0])
 	lastChar := string(myString[myStringLength - 1])
-	result := firstChar + strings.Repeat("*", myStringLength - 2) + lastChar
+	result := firstChar + strings.Repeat("_", myStringLength - 2) + lastChar
 	return result
 }
